@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GestorCar: control sencillo y visual para el mantenimiento de tu vehículo.">
+    <title>GestorCar | Tu auto, bajo control</title>
+    <style>
+        :root {
+            --ink: #132238;
+            --muted: #6f7d8e;
+            --line: #e5eaf0;
+            --surface: #ffffff;
+            --background: #f5f8fb;
+            --primary: #e95d3f;
+            --primary-dark: #c7432d;
+            --navy: #172a46;
+            --green: #28a77b;
+            --shadow: 0 22px 60px rgba(26, 53, 82, .12);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--background);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        a { color: inherit; text-decoration: none; }
+        .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px 0;
+        }
+        .brand { display: flex; align-items: center; gap: 11px; font-size: 1.2rem; font-weight: 800; letter-spacing: -.04em; }
+        .brand-mark {
+            display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px;
+            color: #fff; background: var(--primary); box-shadow: 0 9px 18px rgba(233, 93, 63, .28);
+            font-size: 1.15rem;
+        }
+        nav { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: .92rem; font-weight: 650; }
+        nav a:hover { color: var(--primary); }
+        .nav-cta { padding: 11px 17px; color: #fff; background: var(--navy); border-radius: 10px; }
+        .hero { display: grid; grid-template-columns: 1.03fr .97fr; gap: 70px; align-items: center; padding: 64px 0 88px; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+        .eyebrow::before { content: ""; width: 25px; height: 2px; background: var(--primary); }
+        h1 { max-width: 600px; margin: 18px 0 20px; font-size: clamp(2.8rem, 6vw, 5.35rem); line-height: .98; letter-spacing: -.075em; }
+        h1 span { color: var(--primary); }
+        .hero-copy { max-width: 510px; color: var(--muted); font-size: 1.08rem; line-height: 1.7; }
+        .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 32px; }
+        .button { display: inline-flex; align-items: center; gap: 9px; padding: 14px 20px; border-radius: 11px; font-weight: 750; }
+        .button-primary { color: #fff; background: var(--primary); box-shadow: 0 12px 22px rgba(233, 93, 63, .24); }
+        .button-primary:hover { background: var(--primary-dark); }
+        .button-quiet { color: var(--navy); background: transparent; }
+        .button-quiet::after { content: "→"; color: var(--primary); font-size: 1.25rem; }
+        .hero-visual { position: relative; padding: 28px 0 28px 35px; }
+        .hero-visual::before { content: ""; position: absolute; z-index: -1; width: 270px; height: 270px; right: -25px; top: 0; border-radius: 50%; background: #fbded5; }
+        .dashboard { padding: 27px; border: 1px solid rgba(255,255,255,.8); border-radius: 22px; background: rgba(255,255,255,.86); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+        .dashboard-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .dashboard-title { font-size: .78rem; color: var(--muted); }
+        .dashboard-head strong { display: block; margin-top: 5px; font-size: 1.25rem; }
+        .status { padding: 7px 10px; color: #218461; background: #e4f6ef; border-radius: 99px; font-size: .72rem; font-weight: 800; }
+        .car-card { position: relative; overflow: hidden; padding: 22px; border-radius: 16px; color: #fff; background: linear-gradient(130deg, #203a60, #152840); }
+        .car-card::after { content: "✦"; position: absolute; right: 28px; top: 12px; color: #6d8bab; font-size: 5rem; opacity: .18; }
+        .car-card small { color: #b4c7df; font-size: .75rem; }
+        .car-name { margin: 9px 0 22px; font-size: 1.35rem; font-weight: 750; }
+        .car-details { display: flex; gap: 27px; color: #dbe6f2; font-size: .75rem; }
+        .car-details b { display: block; margin-bottom: 4px; color: #fff; font-size: .92rem; }
+        .metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+        .metric { padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); }
+        .metric-label { display: block; color: var(--muted); font-size: .7rem; }
+        .metric strong { display: block; margin-top: 8px; font-size: 1.18rem; }
+        .metric strong em { color: var(--green); font-size: .68rem; font-style: normal; }
+        .section { padding: 35px 0 90px; }
+        .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; }
+        h2 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: -.06em; }
+        .section-heading p { max-width: 350px; margin: 0; color: var(--muted); line-height: 1.6; text-align: right; }
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .feature { padding: 27px; border: 1px solid var(--line); border-radius: 17px; background: var(--surface); }
+        .feature-icon { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: 23px; border-radius: 12px; color: var(--primary); background: #fff0eb; font-size: 1.2rem; }
+        .feature h3 { margin: 0 0 10px; font-size: 1.05rem; }
+        .feature p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.65; }
+        footer { padding: 28px 0 35px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+        @media (max-width: 800px) {
+            nav a:not(.nav-cta) { display: none; }
+            .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 38px; }
+            .hero-visual { padding-left: 0; }
+            .section-heading { display: block; }
+            .section-heading p { margin-top: 12px; text-align: left; }
+        }
+        @media (max-width: 560px) {
+            .shell { width: min(100% - 28px, 1160px); }
+            .topbar { padding: 17px 0; }
+            .hero { padding-bottom: 58px; }
+            .dashboard { padding: 18px; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="shell topbar">
+        <a class="brand" href="{% url 'sitio1:inicio' %}" aria-label="Ir al inicio de GestorCar">
+            <span class="brand-mark">↗</span> GestorCar
+        </a>
+        <nav aria-label="Navegación principal">
+            <a href="#beneficios">Beneficios</a>
+            <a href="#resumen">Resumen</a>
+            <a class="nav-cta" href="{% url 'sitio1:mensaje' %}">Explorar</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="shell hero">
+            <div>
+                <div class="eyebrow">Control inteligente</div>
+                <h1>Tu auto,<br><span>bajo control.</span></h1>
+                <p class="hero-copy">Organiza mantenimientos, gastos y documentos de tu vehículo en un solo lugar. Menos papeles, más tranquilidad para cada kilómetro.</p>
+                <div class="actions">
+                    <a class="button button-primary" href="#resumen">Ver mi resumen <span>↗</span></a>
+                    <a class="button button-quiet" href="#beneficios">Conoce GestorCar</a>
+                </div>
+            </div>
+            <div class="hero-visual" id="resumen">
+                <div class="dashboard">
+                    <div class="dashboard-head">
+                        <div><span class="dashboard-title">Panel de vehículo</span><strong>Hola, Samuel 👋</strong></div>
+                        <span class="status">● Al día</span>
+                    </div>
+                    <div class="car-card">
+                        <small>Vehículo principal</small>
+                        <div class="car-name">Mazda CX-5 · 2022</div>
+                        <div class="car-details"><span><b>42.890 km</b>Recorrido</span><span><b>ABX 204</b>Placa</span></div>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric"><span class="metric-label">Próximo servicio</span><strong>En 1.240 km</strong></div>
+                        <div class="metric"><span class="metric-label">Gasto este año</span><strong>$1.280.000 <em>↓ 8%</em></strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell section" id="beneficios">
+            <div class="section-heading">
+                <h2>Todo lo que necesitas,<br>en un vistazo.</h2>
+                <p>Una forma simple de cuidar tu vehículo y tomar mejores decisiones.</p>
+            </div>
+            <div class="features">
+                <article class="feature"><div class="feature-icon">◷</div><h3>Mantenimientos</h3><p>Recibe recordatorios y conserva el historial de cada servicio realizado.</p></article>
+                <article class="feature"><div class="feature-icon">$</div><h3>Gastos claros</h3><p>Registra reparaciones, combustible y seguros para entender tus costos reales.</p></article>
+                <article class="feature"><div class="feature-icon">✓</div><h3>Decisiones seguras</h3><p>Consulta la información importante de tu auto cuando y donde la necesites.</p></article>
+            </div>
+        </section>
+    </main>
+
+    <footer><div class="shell">© 2026 GestorCar <span>·</span> Conduce con confianza.</div></footer>
+</body>
+</html>

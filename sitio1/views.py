@@ -1,9 +1,12 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
 
-#Creamos una vista que devuelva un mensaje de bienvenida al usuario.
-def inicio(request):
-    return HttpResponse("Hola, bienvenido a mi sitio 1 web.")
-# Create your views here.
 
-def cargamosMensaje(request):
-    return HttpResponse("Hola, bienvenido a mi sitio 1 web. Esta es la segunda vista.")
+def inicio(request: HttpRequest) -> HttpResponse:
+    return render(request, "index.html")
+
+
+def cargamosMensaje(request: HttpRequest) -> HttpResponse:
+    return HttpResponse(
+        "Hola, bienvenido a GestorCar. Esta es la segunda vista de sitio1."
+    )
