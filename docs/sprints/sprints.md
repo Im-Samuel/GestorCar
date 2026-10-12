@@ -8,12 +8,44 @@ ordenan respetando sus dependencias. Todos parten con estado **Pendiente**.
 
 | Sprint | Objetivo | Issues |
 |---|---|---:|
+| Sprint 0 | Preparar el entorno de desarrollo y colaboración | 1 |
 | Sprint 1 | Crear la base segura y persistente del sistema | 3 |
 | Sprint 2 | Gestionar vehículos, gastos y categorías | 3 |
 | Sprint 3 | Completar el historial y las evidencias | 3 |
 | Sprint 4 | Entregar cálculos, informes, comparación e importación | 5 |
 | Sprint 5 | Asegurar calidad, rendimiento, usabilidad y recuperación | 3 |
-| **Total** |  | **17** |
+| **Total** |  | **18** |
+
+---
+
+## Sprint 0 - Entorno de desarrollo y colaboración
+
+### Objetivo
+
+Garantizar que todo el equipo trabaje sobre el mismo entorno, con versiones
+fijadas, contenedores Docker y un flujo común con OpenSpec, antes de escribir
+funcionalidad.
+
+### Issues asignados
+
+- **ISSUE-000:** Configurar entorno de desarrollo y colaboración.
+
+### Entregables
+
+- `.gitignore`, `requirements.txt` en UTF-8 y `.env.example`.
+- Configuración de Django basada en variables de entorno.
+- `Dockerfile` y `docker-compose.yml` con la aplicación y la base de datos.
+- `README.md` con instrucciones de instalación local y con Docker.
+- OpenSpec configurado para Claude Code y OpenCode.
+- Convenciones de ramas, commits y pull requests.
+
+### Criterios de cierre
+
+- Cada integrante puede clonar el repositorio y levantar la aplicación con
+  `docker compose up` o con un entorno virtual local siguiendo el `README.md`.
+- El repositorio no contiene entornos virtuales, dependencias instaladas ni
+  secretos.
+- Existe un comando único para ejecutar las pruebas.
 
 ---
 
@@ -26,21 +58,21 @@ módulos, garantizando autenticación, persistencia e integridad referencial.
 
 ### Issues asignados
 
-- **ISSUE-001:** Implementar registro y autenticación de usuarios.
-- **ISSUE-003:** Diseñar base de datos e integridad referencial.
-- **ISSUE-002:** Crear modelo y gestión de vehículos.
+- **ISSUE-001:** Diseñar base de datos y modelos.
+- **ISSUE-002:** Implementar registro y autenticación de usuarios.
+- **ISSUE-003:** Implementar gestión de vehículos.
 
 ### Orden recomendado
 
 1. ISSUE-001
-2. ISSUE-003
-3. ISSUE-002
+2. ISSUE-002
+3. ISSUE-003
 
 ### Entregables
 
+- Modelos de usuario, vehículo, registro, categoría y evidencia, con sus
+  relaciones y restricciones de integridad.
 - Registro, inicio y cierre de sesión.
-- Modelo de datos para usuarios y vehículos.
-- Relaciones entre usuarios, vehículos, gastos y evidencias.
 - Operaciones básicas de vehículos con aislamiento por usuario.
 
 ### Criterios de cierre
@@ -61,8 +93,8 @@ validaciones completas y categorías consistentes.
 
 ### Issues asignados
 
-- **ISSUE-004:** Registrar gastos e intervenciones.
-- **ISSUE-005:** Gestionar categorías de gastos.
+- **ISSUE-004:** Definir el catálogo de categorías.
+- **ISSUE-005:** Registrar gastos e intervenciones.
 - **ISSUE-007:** Editar y eliminar gastos e intervenciones.
 
 ### Orden recomendado
@@ -73,9 +105,9 @@ validaciones completas y categorías consistentes.
 
 ### Entregables
 
+- Catálogo completo de categorías agrupadas por tipo de actividad.
 - Formulario de gastos e intervenciones.
 - Validación de fechas, importes, kilometrajes y campos obligatorios.
-- Catálogo completo de categorías.
 - Edición y eliminación con confirmación.
 
 ### Criterios de cierre
@@ -83,7 +115,7 @@ validaciones completas y categorías consistentes.
 - Se pueden registrar todos los tipos de gasto definidos.
 - Los datos inválidos no se guardan.
 - Las categorías se reutilizan en consultas e informes.
-- Editar o eliminar un registro actualiza los datos derivados.
+- Editar o eliminar un registro se refleja en las consultas posteriores.
 
 ---
 
@@ -207,7 +239,8 @@ accesibilidad y recuperación ante fallos.
 
 | Sprint | Depende de | Motivo |
 |---|---|---|
-| Sprint 1 | — | Contiene la base inicial del sistema. |
+| Sprint 0 | — | Prepara el entorno común del equipo. |
+| Sprint 1 | Sprint 0 | Contiene la base inicial del sistema. |
 | Sprint 2 | Sprint 1 | Los gastos requieren usuarios y vehículos persistentes. |
 | Sprint 3 | Sprint 2 | El historial y las evidencias requieren registros de gastos. |
 | Sprint 4 | Sprint 3 | Los informes requieren historial y cálculo centralizado. |
