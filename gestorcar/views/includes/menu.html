@@ -1,0 +1,16 @@
+{# Enlaces de la barra de navegación. `vertical` lo usa el menú de teléfono. #}
+<ul class="flex {% if vertical %}flex-col items-stretch gap-3{% else %}items-center gap-4{% endif %}">
+  {% if user.is_authenticated %}
+    <li><a class="enlace" href="{% url 'vehiculos:lista' %}"{% if request.resolver_match.namespace == 'vehiculos' %} aria-current="page"{% endif %}>Mis vehículos</a></li>
+    <li class="text-sm text-slate-600">{{ user.get_full_name|default:user.email }}</li>
+    <li>
+      <form method="post" action="{% url 'cuentas:cerrar_sesion' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secundario w-full">Cerrar sesión</button>
+      </form>
+    </li>
+  {% else %}
+    <li><a class="enlace" href="{% url 'cuentas:iniciar_sesion' %}">Iniciar sesión</a></li>
+    <li><a class="btn btn-primario w-full" href="{% url 'cuentas:registro' %}">Crear cuenta</a></li>
+  {% endif %}
+</ul>

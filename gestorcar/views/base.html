@@ -1,0 +1,43 @@
+{% load static %}<!doctype html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Inicio{% endblock %} · GestorCar</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="flex min-h-full flex-col text-slate-900">
+  <a href="#contenido" class="btn btn-primario sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50">Saltar al contenido</a>
+
+  <header class="border-b border-slate-200 bg-white">
+    <nav aria-label="Principal" class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+      <a href="{% url 'inicio' %}" class="text-lg font-bold text-blue-800 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">GestorCar</a>
+
+      {# Escritorio: menú siempre visible. #}
+      <div class="hidden md:block">
+        {% include "includes/menu.html" %}
+      </div>
+
+      {# Teléfono: menú desplegable con <details>, sin JavaScript y usable con teclado. #}
+      <details class="relative md:hidden">
+        <summary class="btn btn-secundario cursor-pointer list-none [&::-webkit-details-marker]:hidden">Menú</summary>
+        <div class="tarjeta absolute right-0 z-10 mt-2 w-60 p-3">
+          {% include "includes/menu.html" with vertical=True %}
+        </div>
+      </details>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div class="mx-auto w-full max-w-5xl space-y-2 px-4 pt-4" role="status" aria-live="polite">
+      {% for message in messages %}
+        <p class="rounded-md border p-3 text-sm {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-800{% else %}border-green-200 bg-green-50 text-green-800{% endif %}">{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main id="contenido" class="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>

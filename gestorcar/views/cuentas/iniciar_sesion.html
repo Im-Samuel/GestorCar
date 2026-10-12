@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar sesión{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta mx-auto max-w-md space-y-6">
+    <h1 class="text-2xl font-bold">Iniciar sesión</h1>
+
+    <form method="post" novalidate class="space-y-4">
+      {% csrf_token %}
+      {% include "includes/errores_formulario.html" %}
+      {% for campo in form %}
+        {% include "includes/campo.html" with campo=campo %}
+      {% endfor %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-primario w-full">Iniciar sesión</button>
+    </form>
+
+    <p class="text-center text-sm">¿No tienes cuenta? <a class="enlace" href="{% url 'cuentas:registro' %}">Crea una</a></p>
+  </section>
+{% endblock %}

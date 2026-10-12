@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block titulo %}Crear cuenta{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta mx-auto max-w-md space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold">Crear cuenta</h1>
+      <p class="text-sm text-slate-600">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+    </header>
+
+    <form method="post" novalidate class="space-y-4">
+      {% csrf_token %}
+      {% include "includes/errores_formulario.html" %}
+      {% for campo in form %}
+        {% include "includes/campo.html" with campo=campo %}
+      {% endfor %}
+      <button type="submit" class="btn btn-primario w-full">Crear cuenta</button>
+    </form>
+
+    <p class="text-center text-sm">¿Ya tienes cuenta? <a class="enlace" href="{% url 'cuentas:iniciar_sesion' %}">Inicia sesión</a></p>
+  </section>
+{% endblock %}
