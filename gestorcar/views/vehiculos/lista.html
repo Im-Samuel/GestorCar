@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis vehículos{% endblock %}
+
+{% block contenido %}
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <h1 class="text-2xl font-bold">Mis vehículos</h1>
+    <a href="{% url 'vehiculos:crear' %}" class="btn btn-primario">Registrar vehículo</a>
+  </div>
+
+  {% if vehiculos %}
+    {# Escritorio: tabla. #}
+    <div class="tarjeta hidden overflow-hidden p-0 md:block">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Mis vehículos, primero los activos</caption>
+        <thead class="bg-slate-50 text-slate-600">
+          <tr>
+            <th scope="col" class="px-4 py-3 font-semibold">Vehículo</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Placa</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Año</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Kilometraje</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Tipo</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for vehiculo in vehiculos %}
+            <tr class="{% if vehiculo.estado == 'retirado' %}text-slate-500{% endif %}">
+              <th scope="row" class="px-4 py-3 font-medium">
+                <a class="enlace" href="{% url 'vehiculos:detalle' vehiculo.pk %}">{{ vehiculo.marca }} {{ vehiculo.modelo }}</a>
+              </th>
+              <td class="px-4 py-3 font-mono">{{ vehiculo.placa }}</td>
+              <td class="px-4 py-3">{{ vehiculo.anio }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">{{ vehiculo.kilometraje }} km</td>
+              <td class="px-4 py-3">{{ vehiculo.get_tipo_display }}</td>
+              <td class="px-4 py-3">{% include "includes/insignia_estado.html" %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {# Teléfono: tarjetas apiladas. #}
+    <ul class="space-y-3 md:hidden">
+      {% for vehiculo in vehiculos %}
+        <li class="tarjeta p-4 {% if vehiculo.estado == 'retirado' %}text-slate-500{% endif %}">
+          <div class="flex items-start justify-between gap-3">
+            <a class="enlace text-base" href="{% url 'vehiculos:detalle' vehiculo.pk %}">{{ vehiculo.marca }} {{ vehiculo.modelo }}</a>
+            {% include "includes/insignia_estado.html" %}
+          </div>
+          <p class="mt-1 text-sm">
+            <span class="font-mono">{{ vehiculo.placa }}</span> · {{ vehiculo.anio }} · {{ vehiculo.kilometraje }} km · {{ vehiculo.get_tipo_display }}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="tarjeta space-y-3 text-center">
+      <p class="text-slate-600">Todavía no tienes vehículos registrados.</p>
+      <a href="{% url 'vehiculos:crear' %}" class="btn btn-primario">Registrar mi primer vehículo</a>
+    </div>
+  {% endif %}
+{% endblock %}

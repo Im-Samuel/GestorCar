@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block titulo %}{% if object %}Editar vehículo{% else %}Registrar vehículo{% endif %}{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta mx-auto max-w-lg space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold">{% if object %}Editar {{ object.marca }} {{ object.modelo }}{% else %}Registrar vehículo{% endif %}</h1>
+      <p class="text-sm text-slate-600">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+    </header>
+
+    <form method="post" novalidate class="space-y-4">
+      {% csrf_token %}
+      {% include "includes/errores_formulario.html" %}
+      {% for campo in form %}
+        {% include "includes/campo.html" with campo=campo %}
+      {% endfor %}
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="btn btn-primario">Guardar</button>
+        <a href="{% if object %}{% url 'vehiculos:detalle' object.pk %}{% else %}{% url 'vehiculos:lista' %}{% endif %}" class="btn btn-secundario">Cancelar</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

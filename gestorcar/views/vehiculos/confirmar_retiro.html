@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block titulo %}Retirar {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta mx-auto max-w-lg space-y-4">
+    {% if vehiculo.estado == "retirado" %}
+      <h1 class="text-2xl font-bold">{{ vehiculo.marca }} {{ vehiculo.modelo }} ya está retirado</h1>
+      <a href="{% url 'vehiculos:detalle' vehiculo.pk %}" class="btn btn-secundario">Volver al vehículo</a>
+    {% else %}
+      <h1 class="text-2xl font-bold">¿Retirar {{ vehiculo.marca }} {{ vehiculo.modelo }} ({{ vehiculo.placa }})?</h1>
+      <p class="text-slate-700">
+        El vehículo quedará marcado como retirado. <strong>No se elimina:</strong> su historial de
+        gastos e intervenciones se conserva y podrás seguir consultándolo.
+      </p>
+      <form method="post" class="flex flex-wrap gap-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-peligro">Retirar vehículo</button>
+        <a href="{% url 'vehiculos:detalle' vehiculo.pk %}" class="btn btn-secundario">Cancelar</a>
+      </form>
+    {% endif %}
+  </section>
+{% endblock %}
