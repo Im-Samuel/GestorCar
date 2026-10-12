@@ -1,0 +1,13 @@
+# Todos los archivos de texto se guardan con finales de línea LF, también en
+# Windows, para que funcionen igual dentro de los contenedores Linux.
+* text=auto eol=lf
+
+# Archivos binarios: git no debe convertirlos.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
