@@ -1,0 +1,30 @@
+[project]
+name = "gestorcar"
+version = "0.1.0"
+description = "Plataforma de gestión y control de vehículos"
+requires-python = ">=3.11,<3.12"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+# Solo código Python: la documentación en Markdown no se formatea.
+include = ["*.py", "*.pyi", "**/pyproject.toml"]
+# .claude, .opencode y openspec los genera OpenSpec: no se formatean.
+extend-exclude = [
+    "node_modules",
+    ".venv",
+    "venv",
+    "**/migrations/*",
+    ".claude",
+    ".opencode",
+    "openspec",
+]
+
+[tool.ruff.lint]
+# E/F: errores de pycodestyle y pyflakes, I: orden de imports, B: bugbear,
+# UP: sintaxis moderna de Python, DJ: buenas prácticas de Django.
+select = ["E", "F", "I", "B", "UP", "DJ"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py"]
