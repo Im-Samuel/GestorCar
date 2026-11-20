@@ -253,7 +253,11 @@ def test_no_existe_ninguna_url_para_eliminar_vehiculos(cliente, vehiculo):
             elif isinstance(p, URLPattern):
                 yield prefijo + str(p.pattern), p.name or ""
 
-    rutas_vehiculos = [r for r in nombres(get_resolver().url_patterns) if "vehiculos/" in r[0]]
+    # Solo rutas del namespace de vehículos (excluye las de registros anidadas bajo /vehiculos/).
+    rutas_vehiculos = [
+        r for r in nombres(get_resolver().url_patterns)
+        if "vehiculos/" in r[0] and "registros/" not in r[0]
+    ]
 
     assert rutas_vehiculos
     assert not [r for r in rutas_vehiculos if "elimin" in r[0] + r[1] or "borr" in r[0] + r[1]]
