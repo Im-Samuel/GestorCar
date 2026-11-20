@@ -43,9 +43,11 @@ def vehiculo(usuario):
 
 @pytest.fixture
 def categoria():
-    return Categoria.objects.create(
-        nombre="Cambio de aceite", tipo_actividad=Categoria.TipoActividad.MANTENIMIENTO
+    obj, _ = Categoria.objects.get_or_create(
+        nombre="Cambio de aceite",
+        defaults={"tipo_actividad": Categoria.TipoActividad.MANTENIMIENTO},
     )
+    return obj
 
 
 @pytest.fixture

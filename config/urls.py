@@ -9,5 +9,10 @@ urlpatterns = [
     path("", RedirectView.as_view(pattern_name="vehiculos:lista"), name="inicio"),
     path("cuentas/", include("gestorcar.urls.cuentas")),
     path("vehiculos/", include("gestorcar.urls.vehiculos")),
+    # Los registros van anidados bajo el vehículo al que pertenecen.
+    path(
+        "vehiculos/<int:vehiculo_pk>/registros/",
+        include("gestorcar.urls.registros"),
+    ),
     path("admin/", admin.site.urls),
 ]

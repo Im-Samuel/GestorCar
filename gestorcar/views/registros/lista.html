@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block titulo %}Registros · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:detalle' vehiculo.pk %}">← {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <h1 class="text-2xl font-bold">Registros</h1>
+    <a href="{% url 'registros:crear' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Nuevo registro</a>
+  </div>
+
+  {% if registros %}
+    {# Escritorio: tabla. #}
+    <div class="tarjeta hidden overflow-hidden p-0 md:block">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Registros de {{ vehiculo.marca }} {{ vehiculo.modelo }}, más recientes primero</caption>
+        <thead class="bg-slate-50 text-slate-600">
+          <tr>
+            <th scope="col" class="px-4 py-3 font-semibold">Fecha</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Categoría</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Descripción</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Costo</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Km</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for registro in registros %}
+            <tr>
+              <td class="px-4 py-3 tabular-nums">
+                <a class="enlace" href="{% url 'registros:detalle' vehiculo_pk=vehiculo.pk pk=registro.pk %}">{{ registro.fecha|date:"d/m/Y" }}</a>
+              </td>
+              <td class="px-4 py-3">{{ registro.categoria }}</td>
+              <td class="px-4 py-3 max-w-xs truncate" title="{{ registro.descripcion }}">{{ registro.descripcion }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${{ registro.costo|floatformat:0 }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">{{ registro.kilometraje }} km</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot class="border-t-2 border-slate-300 bg-slate-50 font-semibold">
+          <tr>
+            <td colspan="3" class="px-4 py-3 text-right text-slate-600">Total</td>
+            <td class="px-4 py-3 text-right tabular-nums">
+              ${% with total=registros|length %}{{ registros.aggregate_total|default:"—" }}{% endwith %}
+            </td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    {# Teléfono: tarjetas apiladas. #}
+    <ul class="space-y-3 md:hidden">
+      {% for registro in registros %}
+        <li class="tarjeta p-4">
+          <div class="flex items-start justify-between gap-3">
+            <a class="enlace text-base font-medium" href="{% url 'registros:detalle' vehiculo_pk=vehiculo.pk pk=registro.pk %}">{{ registro.categoria }}</a>
+            <span class="tabular-nums text-sm font-semibold">${{ registro.costo|floatformat:0 }}</span>
+          </div>
+          <p class="mt-1 text-sm text-slate-600">{{ registro.fecha|date:"d/m/Y" }} · {{ registro.kilometraje }} km</p>
+          <p class="mt-1 text-sm truncate" title="{{ registro.descripcion }}">{{ registro.descripcion }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="tarjeta space-y-3 text-center">
+      <p class="text-slate-600">Este vehículo aún no tiene registros.</p>
+      <a href="{% url 'registros:crear' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Agregar primer registro</a>
+    </div>
+  {% endif %}
+{% endblock %}

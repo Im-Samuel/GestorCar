@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ registro.fecha|date:"d/m/Y" }} · {{ registro.categoria }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}">← Registros de {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+
+  <article class="tarjeta space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold">{{ registro.categoria }}</h1>
+      <p class="text-sm text-slate-500">{{ registro.categoria.get_tipo_actividad_display }}</p>
+    </header>
+
+    <dl class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm text-slate-600">Fecha</dt>
+        <dd class="text-lg">{{ registro.fecha|date:"j \d\e F \d\e Y" }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Costo</dt>
+        <dd class="text-lg tabular-nums font-semibold">${{ registro.costo|floatformat:2 }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Kilometraje</dt>
+        <dd class="text-lg tabular-nums">{{ registro.kilometraje }} km</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Vehículo</dt>
+        <dd class="text-lg">
+          <a class="enlace" href="{% url 'vehiculos:detalle' vehiculo.pk %}">{{ vehiculo.marca }} {{ vehiculo.modelo }}</a>
+        </dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-sm text-slate-600">Descripción</dt>
+        <dd class="mt-1 whitespace-pre-wrap">{{ registro.descripcion }}</dd>
+      </div>
+    </dl>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'registros:editar' vehiculo_pk=vehiculo.pk pk=registro.pk %}" class="btn btn-secundario">Editar</a>
+      <a href="{% url 'registros:eliminar' vehiculo_pk=vehiculo.pk pk=registro.pk %}" class="btn btn-peligro">Eliminar</a>
+    </div>
+  </article>
+{% endblock %}
