@@ -35,6 +35,7 @@
     </dl>
 
     <div class="flex flex-wrap gap-3">
+      <a href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Ver registros</a>
       <a href="{% url 'vehiculos:editar' vehiculo.pk %}" class="btn btn-secundario">Editar</a>
       {% if vehiculo.estado == "activo" %}
         <a href="{% url 'vehiculos:retirar' vehiculo.pk %}" class="btn btn-secundario">Retirar</a>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block titulo %}Eliminar registro · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'registros:detalle' vehiculo_pk=vehiculo.pk pk=registro.pk %}">← Volver al registro</a></p>
+
+  <section class="tarjeta mx-auto max-w-lg space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold text-red-700">Eliminar registro</h1>
+    </header>
+
+    <p class="text-slate-700">
+      ¿Estás seguro de que quieres eliminar este registro? Esta acción no se puede deshacer.
+    </p>
+
+    <dl class="grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4 text-sm sm:grid-cols-2">
+      <div>
+        <dt class="text-slate-500">Fecha</dt>
+        <dd class="font-medium">{{ registro.fecha|date:"j \d\e F \d\e Y" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Categoría</dt>
+        <dd class="font-medium">{{ registro.categoria }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Costo</dt>
+        <dd class="font-medium tabular-nums">${{ registro.costo|floatformat:2 }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Kilometraje</dt>
+        <dd class="font-medium tabular-nums">{{ registro.kilometraje }} km</dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-slate-500">Descripción</dt>
+        <dd class="font-medium">{{ registro.descripcion }}</dd>
+      </div>
+    </dl>
+
+    <div class="flex flex-wrap gap-3">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-peligro">Sí, eliminar</button>
+      </form>
+      <a href="{% url 'registros:detalle' vehiculo_pk=vehiculo.pk pk=registro.pk %}" class="btn btn-secundario">Cancelar</a>
+    </div>
+  </section>
+{% endblock %}

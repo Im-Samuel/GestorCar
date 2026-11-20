@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block titulo %}{% if object %}Editar registro{% else %}Nuevo registro{% endif %} · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}">← Registros de {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+
+  <section class="tarjeta mx-auto max-w-lg space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold">{% if object %}Editar registro{% else %}Nuevo registro{% endif %}</h1>
+      <p class="text-sm text-slate-600">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+    </header>
+
+    <form method="post" novalidate class="space-y-4">
+      {% csrf_token %}
+      {% include "includes/errores_formulario.html" %}
+      {% for campo in form %}
+        {% include "includes/campo.html" with campo=campo %}
+      {% endfor %}
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="btn btn-primario">Guardar</button>
+        <a href="{% if object %}{% url 'registros:detalle' vehiculo_pk=vehiculo.pk pk=object.pk %}{% else %}{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}{% endif %}" class="btn btn-secundario">Cancelar</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
