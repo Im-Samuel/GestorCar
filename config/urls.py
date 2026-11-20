@@ -20,5 +20,6 @@ urlpatterns = [
         include("gestorcar.urls.evidencias"),
     ),
     path("reportes/", include("gestorcar.urls.reportes")),
+    path("respaldo/", include("gestorcar.urls.respaldo")),
     path("admin/", admin.site.urls),
 ]
