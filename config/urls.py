@@ -14,5 +14,10 @@ urlpatterns = [
         "vehiculos/<int:vehiculo_pk>/registros/",
         include("gestorcar.urls.registros"),
     ),
+    # Las evidencias van anidadas bajo su registro.
+    path(
+        "vehiculos/<int:vehiculo_pk>/registros/<int:registro_pk>/evidencias/",
+        include("gestorcar.urls.evidencias"),
+    ),
     path("admin/", admin.site.urls),
 ]

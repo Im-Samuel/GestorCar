@@ -41,4 +41,45 @@
       <a href="{% url 'registros:eliminar' vehiculo_pk=vehiculo.pk pk=registro.pk %}" class="btn btn-peligro">Eliminar</a>
     </div>
   </article>
+
+  {# ── Evidencias ── #}
+  <section class="mt-6 space-y-4">
+    <h2 class="text-xl font-bold">Evidencias</h2>
+
+    {% with evidencias=registro.evidencias.all %}
+      {% if evidencias %}
+        <ul class="space-y-2">
+          {% for ev in evidencias %}
+            <li class="tarjeta flex items-center justify-between gap-4 p-4">
+              <div class="min-w-0">
+                <a class="enlace truncate block" href="{% url 'evidencias:descargar' vehiculo_pk=vehiculo.pk registro_pk=registro.pk pk=ev.pk %}">
+                  {{ ev.nombre_original|default:ev.archivo.name }}
+                </a>
+                <p class="text-sm text-slate-500">{{ ev.get_tipo_display }} · {{ ev.subido|date:"d/m/Y" }}</p>
+              </div>
+              <form method="post" action="{% url 'evidencias:eliminar' vehiculo_pk=vehiculo.pk registro_pk=registro.pk pk=ev.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-peligro text-xs" onclick="return confirm('¿Eliminar esta evidencia?')">Eliminar</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-sm text-slate-600">Este registro no tiene evidencias adjuntas.</p>
+      {% endif %}
+    {% endwith %}
+
+    {# Formulario de subida #}
+    <div class="tarjeta space-y-4">
+      <h3 class="font-semibold">Adjuntar evidencia</h3>
+      <form method="post" enctype="multipart/form-data" action="{% url 'evidencias:crear' vehiculo_pk=vehiculo.pk registro_pk=registro.pk %}" class="space-y-4" novalidate>
+        {% csrf_token %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% include "includes/campo.html" with campo=evidencia_form.tipo %}
+          {% include "includes/campo.html" with campo=evidencia_form.archivo %}
+        </div>
+        <button type="submit" class="btn btn-primario">Subir archivo</button>
+      </form>
+    </div>
+  </section>
 {% endblock %}

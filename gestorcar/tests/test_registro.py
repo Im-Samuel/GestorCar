@@ -122,6 +122,10 @@ def test_las_peticiones_son_atomicas():
     assert settings.DATABASES["default"]["ATOMIC_REQUESTS"] is True
 
 
+@pytest.mark.skipif(
+    settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3",
+    reason="SQLite no valida longitud de VARCHAR; prueba requiere PostgreSQL.",
+)
 def test_fallo_a_mitad_de_una_operacion_no_deja_datos(vehiculo, categoria):
     with pytest.raises(DataError), transaction.atomic():
         nuevo = Registro.objects.create(vehiculo=vehiculo, categoria=categoria, **datos_registro())

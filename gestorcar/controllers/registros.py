@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, View
 
+from gestorcar.forms.evidencias import EvidenciaForm
+from gestorcar.forms.historial import HistorialFiltroForm
 from gestorcar.forms.registros import RegistroForm
 from gestorcar.models import Registro, Vehiculo
 
@@ -36,11 +38,35 @@ class RegistroListaView(RegistroPorVehiculoMixin, ListView):
     template_name = "registros/lista.html"
     context_object_name = "registros"
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        form = HistorialFiltroForm(self.request.GET or None)
+        if form.is_valid():
+            if form.cleaned_data.get("fecha_desde"):
+                qs = qs.filter(fecha__gte=form.cleaned_data["fecha_desde"])
+            if form.cleaned_data.get("fecha_hasta"):
+                qs = qs.filter(fecha__lte=form.cleaned_data["fecha_hasta"])
+            if form.cleaned_data.get("categoria"):
+                qs = qs.filter(categoria=form.cleaned_data["categoria"])
+            if form.cleaned_data.get("tipo_actividad"):
+                qs = qs.filter(categoria__tipo_actividad=form.cleaned_data["tipo_actividad"])
+        return qs
+
+    def get_context_data(self, **kwargs):
+        filtro_form = HistorialFiltroForm(self.request.GET or None)
+        qs = self.get_queryset()
+        from django.db.models import Sum
+        total = qs.aggregate(total=Sum("costo"))["total"]
+        return super().get_context_data(**kwargs, filtro_form=filtro_form, total=total)
+
 
 class RegistroDetalleView(RegistroPorVehiculoMixin, DetailView):
     model = Registro
     template_name = "registros/detalle.html"
     context_object_name = "registro"
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs, evidencia_form=EvidenciaForm())
 
 
 class RegistroFormularioMixin(RegistroPorVehiculoMixin):
