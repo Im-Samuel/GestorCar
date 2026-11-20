@@ -55,7 +55,7 @@ def cliente(client, usuario):
 def test_lista_requiere_autenticacion(client, vehiculo):
     respuesta = client.get(url_lista(vehiculo))
     assert respuesta.status_code == 302
-    assert "iniciar_sesion" in respuesta["Location"]
+    assert "iniciar-sesion" in respuesta["Location"]
 
 
 def test_lista_muestra_registros_del_vehiculo(cliente, vehiculo, registro):
