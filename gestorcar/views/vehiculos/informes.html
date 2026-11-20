@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block titulo %}Informes · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:detalle' vehiculo.pk %}">← {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+
+  <h1 class="mb-6 text-2xl font-bold">Informes y estadísticas</h1>
+
+  {# ── Total general ── #}
+  <section class="tarjeta mb-6 p-6">
+    <h2 class="mb-2 text-lg font-semibold">Total invertido</h2>
+    <p class="text-3xl font-bold tabular-nums">${{ total|floatformat:0 }}</p>
+  </section>
+
+  <div class="grid gap-6 md:grid-cols-2">
+    {# ── Por tipo de actividad ── #}
+    <section class="tarjeta p-6">
+      <h2 class="mb-4 text-lg font-semibold">Por tipo de actividad</h2>
+      {% if por_tipo %}
+        <table class="w-full text-sm">
+          <thead class="text-slate-500">
+            <tr>
+              <th class="pb-2 text-left font-medium">Tipo</th>
+              <th class="pb-2 text-right font-medium">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for fila in por_tipo %}
+              <tr>
+                <td class="py-2">{{ fila.tipo_actividad|capfirst }}</td>
+                <td class="py-2 text-right tabular-nums">${{ fila.total|floatformat:0 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="text-slate-500">Sin registros.</p>
+      {% endif %}
+    </section>
+
+    {# ── Por categoría ── #}
+    <section class="tarjeta p-6">
+      <h2 class="mb-4 text-lg font-semibold">Por categoría</h2>
+      {% if por_categoria %}
+        <table class="w-full text-sm">
+          <thead class="text-slate-500">
+            <tr>
+              <th class="pb-2 text-left font-medium">Categoría</th>
+              <th class="pb-2 text-right font-medium">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for fila in por_categoria %}
+              <tr>
+                <td class="py-2">{{ fila.nombre }}</td>
+                <td class="py-2 text-right tabular-nums">${{ fila.total|floatformat:0 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="text-slate-500">Sin registros.</p>
+      {% endif %}
+    </section>
+  </div>
+
+  {# ── Evolución mensual ── #}
+  <section class="tarjeta mt-6 p-6">
+    <h2 class="mb-4 text-lg font-semibold">Evolución mensual</h2>
+    {% if por_mes %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-slate-500">
+            <tr>
+              <th class="pb-2 text-left font-medium">Mes</th>
+              <th class="pb-2 text-right font-medium">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for fila in por_mes %}
+              <tr>
+                <td class="py-2 tabular-nums">{{ fila.mes|date:"M Y" }}</td>
+                <td class="py-2 text-right tabular-nums">${{ fila.total|floatformat:0 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-slate-500">Sin registros.</p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block titulo %}Comparar vehículos{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:lista' %}">← Mis vehículos</a></p>
+
+  <h1 class="mb-6 text-2xl font-bold">Comparar vehículos</h1>
+
+  {% if filas %}
+    <div class="tarjeta overflow-hidden p-0">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Comparación de gastos entre vehículos</caption>
+        <thead class="bg-slate-50 text-slate-600">
+          <tr>
+            <th scope="col" class="px-4 py-3 font-semibold">Vehículo</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Total</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Mantenimiento</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Reparación</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Modificación</th>
+            <th scope="col" class="px-4 py-3 text-right font-semibold">Otro</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for fila in filas %}
+            <tr>
+              <td class="px-4 py-3">
+                <a class="enlace font-medium" href="{% url 'vehiculos:detalle' fila.vehiculo.pk %}">
+                  {{ fila.vehiculo.marca }} {{ fila.vehiculo.modelo }}
+                </a>
+                <span class="ml-1 text-xs text-slate-500">({{ fila.vehiculo.placa }})</span>
+              </td>
+              <td class="px-4 py-3 text-right font-semibold tabular-nums">${{ fila.total|floatformat:0 }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${{ fila.por_tipo.mantenimiento|default:0|floatformat:0 }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${{ fila.por_tipo.reparacion|default:0|floatformat:0 }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${{ fila.por_tipo.modificacion|default:0|floatformat:0 }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${{ fila.por_tipo.otro|default:0|floatformat:0 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="tarjeta text-center">
+      <p class="text-slate-600">No tienes vehículos registrados aún.</p>
+      <a href="{% url 'vehiculos:crear' %}" class="btn btn-primario mt-4">Registrar vehículo</a>
+    </div>
+  {% endif %}
+{% endblock %}
