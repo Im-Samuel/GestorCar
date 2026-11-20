@@ -28,3 +28,12 @@ select = ["E", "F", "I", "B", "UP", "DJ"]
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["tests.py", "test_*.py"]
+addopts = "--tb=short"
+
+[tool.coverage.run]
+source = ["gestorcar"]
+omit = ["*/migrations/*", "*/tests/*", "gestorcar/admin/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
