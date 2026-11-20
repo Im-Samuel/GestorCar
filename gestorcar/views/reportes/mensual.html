@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block titulo %}Reporte mensual{% endblock %}
+
+{% block contenido %}
+  <h1 class="mb-6 text-2xl font-bold">Reporte mensual</h1>
+
+  {# ── Selector de mes y vehículo ── #}
+  <form method="get" class="tarjeta mb-6 p-6">
+    <div class="grid gap-4 sm:grid-cols-4">
+      {% include "includes/campo.html" with campo=form.anio %}
+      {% include "includes/campo.html" with campo=form.mes %}
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700" for="id_vehiculo">Vehículo</label>
+        <select name="vehiculo" id="id_vehiculo" class="campo w-full">
+          <option value="">Todos los vehículos</option>
+          {% for v in vehiculos %}
+            <option value="{{ v.pk }}" {% if form.cleaned_data.vehiculo == v.pk %}selected{% endif %}>
+              {{ v.marca }} {{ v.modelo }} ({{ v.placa }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex items-end">
+        <button type="submit" class="btn btn-primario w-full">Generar</button>
+      </div>
+    </div>
+  </form>
+
+  {% if reporte %}
+    <p class="mb-4 text-sm text-slate-600">
+      Período: {{ reporte.primer_dia|date:"j \d\e F" }} al {{ reporte.ultimo_dia|date:"j \d\e F \d\e Y" }}
+    </p>
+
+    {# Total consolidado #}
+    <div class="tarjeta mb-6 p-6">
+      <p class="text-sm text-slate-600">Total consolidado</p>
+      <p class="text-3xl font-bold tabular-nums">${{ reporte.total_global|floatformat:0 }}</p>
+    </div>
+
+    {# Desglose por vehículo #}
+    {% for fila in reporte.filas %}
+      <section class="tarjeta mb-6 p-6">
+        <h2 class="mb-4 text-lg font-semibold">
+          <a class="enlace" href="{% url 'vehiculos:detalle' fila.vehiculo.pk %}">
+            {{ fila.vehiculo.marca }} {{ fila.vehiculo.modelo }}
+          </a>
+          <span class="ml-2 text-base font-normal text-slate-500">{{ fila.vehiculo.placa }}</span>
+        </h2>
+        <p class="mb-4 text-xl font-semibold tabular-nums">${{ fila.total|floatformat:0 }}</p>
+        {% if fila.por_categoria %}
+          <table class="w-full text-sm">
+            <thead class="text-slate-500">
+              <tr>
+                <th class="pb-2 text-left font-medium">Categoría</th>
+                <th class="pb-2 text-right font-medium">Total</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for cat in fila.por_categoria %}
+                <tr>
+                  <td class="py-2">{{ cat.nombre }}</td>
+                  <td class="py-2 text-right tabular-nums">${{ cat.total|floatformat:0 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="text-slate-500 text-sm">Sin registros en este período.</p>
+        {% endif %}
+      </section>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

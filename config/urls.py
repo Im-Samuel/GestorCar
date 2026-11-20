@@ -19,5 +19,6 @@ urlpatterns = [
         "vehiculos/<int:vehiculo_pk>/registros/<int:registro_pk>/evidencias/",
         include("gestorcar.urls.evidencias"),
     ),
+    path("reportes/", include("gestorcar.urls.reportes")),
     path("admin/", admin.site.urls),
 ]
