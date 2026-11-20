@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block titulo %}Importar registros · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}">← Registros de {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+
+  <h1 class="mb-6 text-2xl font-bold">Importar registros desde CSV</h1>
+
+  {% if not resultado %}
+    <div class="tarjeta mb-6 p-4 text-sm text-slate-600">
+      <p class="font-semibold">Formato esperado del archivo:</p>
+      <pre class="mt-2 overflow-x-auto rounded bg-slate-100 p-3 font-mono text-xs">fecha,categoria,descripcion,costo,kilometraje
+2026-01-15,Cambio de aceite,Cambio de aceite y filtro,180000,50000
+2026-02-20,Revisión de frenos,Ajuste de frenos delanteros,95000,52000</pre>
+      <p class="mt-2">La columna <strong>categoria</strong> debe coincidir exactamente con un nombre del catálogo.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="tarjeta space-y-4 p-6">
+      {% csrf_token %}
+      {% include "includes/campo.html" with campo=form.archivo %}
+      <button type="submit" class="btn btn-primario">Importar</button>
+    </form>
+  {% else %}
+    {# ── Resultado de la importación ── #}
+    <div class="mb-6 grid gap-4 sm:grid-cols-3">
+      <div class="tarjeta p-4 text-center">
+        <p class="text-3xl font-bold text-green-600">{{ resultado.aceptadas|length }}</p>
+        <p class="mt-1 text-sm text-slate-600">registros importados</p>
+      </div>
+      <div class="tarjeta p-4 text-center">
+        <p class="text-3xl font-bold {% if resultado.rechazadas %}text-red-600{% else %}text-slate-400{% endif %}">{{ resultado.rechazadas|length }}</p>
+        <p class="mt-1 text-sm text-slate-600">filas rechazadas</p>
+      </div>
+      <div class="tarjeta p-4 text-center">
+        <p class="text-3xl font-bold">{{ resultado.total }}</p>
+        <p class="mt-1 text-sm text-slate-600">filas procesadas</p>
+      </div>
+    </div>
+
+    {% if resultado.rechazadas %}
+      <section class="tarjeta mb-6 p-6">
+        <h2 class="mb-3 font-semibold text-red-700">Filas rechazadas</h2>
+        <table class="w-full text-sm">
+          <thead class="text-slate-500">
+            <tr>
+              <th class="pb-2 text-left font-medium">Fila</th>
+              <th class="pb-2 text-left font-medium">Motivo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for fila in resultado.rechazadas %}
+              <tr>
+                <td class="py-2 tabular-nums">{{ fila.numero }}</td>
+                <td class="py-2 text-red-700">{{ fila.error }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+
+    <div class="flex gap-3">
+      <a href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Ver registros</a>
+      <a href="{% url 'registros:importar' vehiculo_pk=vehiculo.pk %}" class="btn btn-secundario">Importar otro archivo</a>
+    </div>
+  {% endif %}
+{% endblock %}

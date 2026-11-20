@@ -1,4 +1,4 @@
-"""Registro, consulta, edición y eliminación de gastos e intervenciones (ISSUE-005, ISSUE-007)."""
+"""Registro, consulta, edición, eliminación e importación de gastos (ISSUE-005, ISSUE-007, ISSUE-012)."""
 
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
@@ -7,8 +7,10 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, V
 
 from gestorcar.forms.evidencias import EvidenciaForm
 from gestorcar.forms.historial import HistorialFiltroForm
+from gestorcar.forms.importar import ImportarRegistrosForm
 from gestorcar.forms.registros import RegistroForm
 from gestorcar.models import Registro, Vehiculo
+from gestorcar.services.importar import importar_desde_csv
 
 
 class RegistroPorVehiculoMixin:
@@ -30,7 +32,7 @@ class RegistroPorVehiculoMixin:
         return {**super().get_form_kwargs(), "vehiculo": self._vehiculo()}
 
     def get_queryset(self):
-        return Registro.objects.filter(vehiculo=self._vehiculo())
+        return Registro.objects.filter(vehiculo=self._vehiculo()).select_related("categoria")
 
 
 class RegistroListaView(RegistroPorVehiculoMixin, ListView):
@@ -120,3 +122,32 @@ class RegistroEliminarView(View):
         registro.delete()
         messages.success(request, "Registro eliminado.")
         return redirect("registros:lista", vehiculo_pk=vehiculo_pk)
+
+
+class RegistroImportarView(View):
+    """Carga masiva de registros desde un archivo CSV (ISSUE-012, RF-20)."""
+
+    def _vehiculo(self):
+        return get_object_or_404(
+            Vehiculo, pk=self.kwargs["vehiculo_pk"], usuario=self.request.user
+        )
+
+    def get(self, request, *args, **kwargs):
+        vehiculo = self._vehiculo()
+        return render(request, "registros/importar.html", {
+            "form": ImportarRegistrosForm(),
+            "vehiculo": vehiculo,
+        })
+
+    def post(self, request, *args, **kwargs):
+        vehiculo = self._vehiculo()
+        form = ImportarRegistrosForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return render(request, "registros/importar.html", {"form": form, "vehiculo": vehiculo})
+
+        resultado = importar_desde_csv(vehiculo, request.FILES["archivo"])
+        return render(request, "registros/importar.html", {
+            "form": ImportarRegistrosForm(),
+            "vehiculo": vehiculo,
+            "resultado": resultado,
+        })
