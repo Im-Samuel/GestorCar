@@ -10,7 +10,30 @@
     <a href="{% url 'registros:crear' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Nuevo registro</a>
   </div>
 
+  {# ── Filtros ── #}
+  <details class="tarjeta mb-4 p-4" {% if request.GET %}open{% endif %}>
+    <summary class="cursor-pointer font-semibold">Filtrar registros</summary>
+    <form method="get" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" novalidate>
+      {% include "includes/campo.html" with campo=filtro_form.fecha_desde %}
+      {% include "includes/campo.html" with campo=filtro_form.fecha_hasta %}
+      {% include "includes/campo.html" with campo=filtro_form.tipo_actividad %}
+      {% include "includes/campo.html" with campo=filtro_form.categoria %}
+      <div class="flex items-end gap-3 sm:col-span-2 lg:col-span-4">
+        <button type="submit" class="btn btn-primario">Aplicar</button>
+        <a href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}" class="btn btn-secundario">Limpiar</a>
+      </div>
+    </form>
+  </details>
+
   {% if registros %}
+    {# Total del período filtrado #}
+    {% if total %}
+      <p class="mb-3 text-right text-sm text-slate-600">
+        Total{% if request.GET %} (filtrado){% endif %}:
+        <span class="font-semibold tabular-nums">${{ total|floatformat:0 }}</span>
+      </p>
+    {% endif %}
+
     {# Escritorio: tabla. #}
     <div class="tarjeta hidden overflow-hidden p-0 md:block">
       <table class="w-full text-left text-sm">
@@ -37,15 +60,6 @@
             </tr>
           {% endfor %}
         </tbody>
-        <tfoot class="border-t-2 border-slate-300 bg-slate-50 font-semibold">
-          <tr>
-            <td colspan="3" class="px-4 py-3 text-right text-slate-600">Total</td>
-            <td class="px-4 py-3 text-right tabular-nums">
-              ${% with total=registros|length %}{{ registros.aggregate_total|default:"—" }}{% endwith %}
-            </td>
-            <td></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
 
@@ -64,8 +78,13 @@
     </ul>
   {% else %}
     <div class="tarjeta space-y-3 text-center">
-      <p class="text-slate-600">Este vehículo aún no tiene registros.</p>
-      <a href="{% url 'registros:crear' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Agregar primer registro</a>
+      {% if request.GET %}
+        <p class="text-slate-600">No hay registros que coincidan con los filtros.</p>
+        <a href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}" class="btn btn-secundario">Ver todos los registros</a>
+      {% else %}
+        <p class="text-slate-600">Este vehículo aún no tiene registros.</p>
+        <a href="{% url 'registros:crear' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Agregar primer registro</a>
+      {% endif %}
     </div>
   {% endif %}
 {% endblock %}
