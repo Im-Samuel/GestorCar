@@ -2,6 +2,9 @@
 <ul class="flex {% if vertical %}flex-col items-stretch gap-3{% else %}items-center gap-4{% endif %}">
   {% if user.is_authenticated %}
     <li><a class="enlace" href="{% url 'vehiculos:lista' %}"{% if request.resolver_match.namespace == 'vehiculos' %} aria-current="page"{% endif %}>Mis vehículos</a></li>
+    <li><a class="enlace" href="{% url 'vehiculos:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>Comparar</a></li>
+    <li><a class="enlace" href="{% url 'reportes:mensual' %}"{% if request.resolver_match.namespace == 'reportes' %} aria-current="page"{% endif %}>Reportes</a></li>
+    <li><a class="enlace" href="{% url 'respaldo:exportar' %}">Exportar datos</a></li>
     <li class="text-sm text-slate-600">{{ user.get_full_name|default:user.email }}</li>
     <li>
       <form method="post" action="{% url 'cuentas:cerrar_sesion' %}">

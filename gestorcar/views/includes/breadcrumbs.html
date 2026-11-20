@@ -1,0 +1,15 @@
+{# Migas de pan accesibles. Uso:
+   {% include "includes/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
+   breadcrumbs es una lista de dicts {nombre, url}; el último ítem es la página actual. #}
+<nav aria-label="Ruta de navegación" class="mb-6 text-sm text-slate-500">
+  <ol class="flex flex-wrap items-center gap-1">
+    {% for item in breadcrumbs %}
+      {% if not forloop.last %}
+        <li><a class="enlace" href="{{ item.url }}">{{ item.nombre }}</a></li>
+        <li aria-hidden="true" class="select-none">/</li>
+      {% else %}
+        <li aria-current="page" class="font-medium text-slate-900">{{ item.nombre }}</li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>

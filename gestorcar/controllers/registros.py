@@ -39,6 +39,7 @@ class RegistroListaView(RegistroPorVehiculoMixin, ListView):
     model = Registro
     template_name = "registros/lista.html"
     context_object_name = "registros"
+    paginate_by = 25
 
     def get_queryset(self):
         qs = super().get_queryset()

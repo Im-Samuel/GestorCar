@@ -3,7 +3,15 @@
 {% block titulo %}Registros · {{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
 
 {% block contenido %}
-  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:detalle' vehiculo.pk %}">← {{ vehiculo.marca }} {{ vehiculo.modelo }}</a></p>
+  <nav aria-label="Ruta de navegación" class="mb-6 text-sm text-slate-500">
+    <ol class="flex flex-wrap items-center gap-1">
+      <li><a class="enlace" href="{% url 'vehiculos:lista' %}">Mis vehículos</a></li>
+      <li aria-hidden="true" class="select-none">/</li>
+      <li><a class="enlace" href="{% url 'vehiculos:detalle' vehiculo.pk %}">{{ vehiculo.marca }} {{ vehiculo.modelo }}</a></li>
+      <li aria-hidden="true" class="select-none">/</li>
+      <li aria-current="page" class="font-medium text-slate-900">Registros</li>
+    </ol>
+  </nav>
 
   <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <h1 class="text-2xl font-bold">Registros</h1>
@@ -76,6 +84,22 @@
         </li>
       {% endfor %}
     </ul>
+
+    {# ── Paginación ── #}
+    {% if is_paginated %}
+      <nav aria-label="Páginas de registros" class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+        {% if page_obj.has_previous %}
+          <a class="btn btn-secundario" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">‹ Anterior</a>
+        {% endif %}
+        <span class="px-3 py-2 text-slate-600">
+          Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+          <a class="btn btn-secundario" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Siguiente ›</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+
   {% else %}
     <div class="tarjeta space-y-3 text-center">
       {% if request.GET %}

@@ -3,7 +3,13 @@
 {% block titulo %}{{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
 
 {% block contenido %}
-  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:lista' %}">← Mis vehículos</a></p>
+  <nav aria-label="Ruta de navegación" class="mb-6 text-sm text-slate-500">
+    <ol class="flex flex-wrap items-center gap-1">
+      <li><a class="enlace" href="{% url 'vehiculos:lista' %}">Mis vehículos</a></li>
+      <li aria-hidden="true" class="select-none">/</li>
+      <li aria-current="page" class="font-medium text-slate-900">{{ vehiculo.marca }} {{ vehiculo.modelo }}</li>
+    </ol>
+  </nav>
 
   <article class="tarjeta space-y-6">
     <header class="flex flex-wrap items-center gap-3">
@@ -36,6 +42,8 @@
 
     <div class="flex flex-wrap gap-3">
       <a href="{% url 'registros:lista' vehiculo_pk=vehiculo.pk %}" class="btn btn-primario">Ver registros</a>
+      <a href="{% url 'vehiculos:informes' vehiculo.pk %}" class="btn btn-secundario">Informes</a>
+      <a href="{% url 'registros:importar' vehiculo_pk=vehiculo.pk %}" class="btn btn-secundario">Importar CSV</a>
       <a href="{% url 'vehiculos:editar' vehiculo.pk %}" class="btn btn-secundario">Editar</a>
       {% if vehiculo.estado == "activo" %}
         <a href="{% url 'vehiculos:retirar' vehiculo.pk %}" class="btn btn-secundario">Retirar</a>
