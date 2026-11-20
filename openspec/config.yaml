@@ -8,6 +8,15 @@ schema: spec-driven
 #   context: |
 #     Designs and tasks must cover Windows, macOS, and Linux
 #     Write all artifacts in Spanish
+context: |
+  Escribe todos los artefactos (proposal, specs, design, tasks) en español y
+  responde al usuario en español. Mantén en inglés solo el código, los nombres
+  de archivos y las palabras clave requeridas por el formato de OpenSpec.
+  El equipo trabaja con Claude Code y OpenCode, principalmente en Windows; los
+  comandos deben funcionar en Windows y dentro de Docker.
+  El alcance está en docs/Requirements/ y docs/backlogs/Backlogs.md; el orden de trabajo
+  en docs/Issues/Issues.md y docs/sprints/sprints.md. Cada cambio debe indicar el ISSUE
+  y los RF/RNF que cubre.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.

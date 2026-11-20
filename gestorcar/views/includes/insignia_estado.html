@@ -1,0 +1,6 @@
+{# Estado de un vehículo. Uso: {% include "includes/insignia_estado.html" with vehiculo=v %} #}
+{% if vehiculo.estado == "retirado" %}
+  <span class="insignia insignia-retirado">Retirado</span>
+{% else %}
+  <span class="insignia insignia-activo">Activo</span>
+{% endif %}

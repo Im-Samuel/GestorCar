@@ -1,0 +1,22 @@
+{% comment %}
+Dibuja un campo de formulario accesible. Uso:
+  {% include "includes/campo.html" with campo=form.email %}
+
+Django ya agrega al control `aria-invalid="true"` cuando hay errores y
+`aria-describedby` apuntando a "<id>_helptext" y "<id>_error"; aquí se crean
+los elementos con esos mismos id.
+{% endcomment %}
+<div class="campo">
+  <label for="{{ campo.id_for_label }}">
+    {{ campo.label }}{% if campo.field.required %} <span class="text-red-700" aria-hidden="true">*</span>{% endif %}
+  </label>
+  {{ campo }}
+  {% if campo.help_text %}
+    <div id="{{ campo.auto_id }}_helptext" class="campo-ayuda">{{ campo.help_text|safe }}</div>
+  {% endif %}
+  {% if campo.errors %}
+    <ul id="{{ campo.auto_id }}_error" class="campo-error">
+      {% for error in campo.errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+</div>

@@ -1,0 +1,49 @@
+# Entorno de desarrollo de GestorCar.
+# Uso: copiar .env.example a .env y ejecutar `docker compose up`.
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    env_file: .env
+    environment:
+      # Dentro de Docker la base de datos se alcanza por el nombre del servicio.
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    # Sin script de entrada: un .sh podría llegar con finales CRLF desde Windows.
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  tailwind:
+    image: node:24-alpine
+    working_dir: /app
+    # Recompila static/css/app.css al guardar una plantilla. Se usa sondeo (--poll)
+    # porque Docker en Windows no siempre avisa de los cambios en carpetas montadas.
+    command: sh -c "npm ci && npm run css:watch -- --poll=500"
+    volumes:
+      - .:/app
+      # node_modules propio del contenedor: los binarios de Windows no sirven en Linux.
+      - /app/node_modules
+
+volumes:
+  postgres_data:

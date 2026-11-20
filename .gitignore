@@ -1,0 +1,38 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Entornos virtuales ---
+venv/
+.venv/
+env/
+
+# --- Django ---
+media/
+staticfiles/
+*.log
+
+# --- Variables de entorno (se versiona solo .env.example) ---
+.env
+.env.*
+!.env.example
+
+# --- Node (OpenSpec y Tailwind) ---
+node_modules/
+# CSS generado por Tailwind a partir de static/src/app.css
+static/css/app.css
+
+# --- Configuración local de agentes de IA ---
+.claude/settings.local.json
+
+# --- Editores y sistema operativo ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

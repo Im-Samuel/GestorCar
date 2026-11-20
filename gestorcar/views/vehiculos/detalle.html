@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ vehiculo.marca }} {{ vehiculo.modelo }}{% endblock %}
+
+{% block contenido %}
+  <p class="mb-4"><a class="enlace text-sm" href="{% url 'vehiculos:lista' %}">← Mis vehículos</a></p>
+
+  <article class="tarjeta space-y-6">
+    <header class="flex flex-wrap items-center gap-3">
+      <h1 class="text-2xl font-bold">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h1>
+      {% include "includes/insignia_estado.html" %}
+    </header>
+
+    <dl class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm text-slate-600">Placa</dt>
+        <dd class="font-mono text-lg">{{ vehiculo.placa }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Año</dt>
+        <dd class="text-lg">{{ vehiculo.anio }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Kilometraje actual</dt>
+        <dd class="text-lg tabular-nums">{{ vehiculo.kilometraje }} km</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Tipo</dt>
+        <dd class="text-lg">{{ vehiculo.get_tipo_display }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm text-slate-600">Registrado el</dt>
+        <dd class="text-lg">{{ vehiculo.creado|date:"j \d\e F \d\e Y" }}</dd>
+      </div>
+    </dl>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'vehiculos:editar' vehiculo.pk %}" class="btn btn-secundario">Editar</a>
+      {% if vehiculo.estado == "activo" %}
+        <a href="{% url 'vehiculos:retirar' vehiculo.pk %}" class="btn btn-secundario">Retirar</a>
+      {% endif %}
+    </div>
+  </article>
+{% endblock %}
